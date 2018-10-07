@@ -1,0 +1,29 @@
+#!/bin/bash
+if test ! -r $1; then
+   echo "Error: noread is not readable!"
+   echo ""
+   exit 1
+fi
+if [ $# -eq 0 ] ; then
+    echo "Usage: histogram <filename>"
+    echo ""
+    exit 1
+fi
+declare -a result
+awk {'print $2'} $1 > outfile
+readarray grade < outfile
+count=0
+for i in "${grade[@]}"; do
+    let count=count+i
+    let i=i/10*10
+    let result[i]=result[i]+1
+done
+printf "%s scores total...\n" "${#grade[@]}"
+for i in "${!result[@]}"; do
+    let j=100-i
+    printf "%+3s: " "$j" 
+    printf '=%.0s' $(seq "${result[$j]}");
+    echo ""
+done
+z="${#grade[@]}"
+echo Average: $(( count / z ))

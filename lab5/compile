@@ -1,0 +1,26 @@
+#!/bin/bash
+if [ $# -eq 1 ] ; then
+    echo "Usage: compile"
+    exit 1
+fi
+files=src*.c
+for f in $files; do
+    echo "C program: $f"
+    if gcc -Wall -std=c99 $f ; then
+	echo "Successfully compiled!"
+	input=input*.data
+	for i in $input; do
+	    echo "Input file: $i"
+	    a.out < $i | tee save_out
+	    if egrep -q "Error" save_out ; then
+		echo "Run failed on $i."
+	    else
+		echo "Run successful."
+	    fi
+	done
+    else	
+	echo "Compilation of $f failed!"
+    fi
+    echo ""
+done
+rm -f save_out

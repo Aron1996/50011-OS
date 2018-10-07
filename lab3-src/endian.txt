@@ -1,0 +1,3 @@
+Host Nmae	Architecture	Endianess
+lore.cs.purdue.edu    SPARC	Little endian
+data.cs.purdue.edu    X86	Little endian

@@ -1,0 +1,13 @@
+Address		     Variable/Function 		Section
+-----------         -----------------           --------
+0x4005d6		    foo			Text
+0x40061f		    main		Text
+0x400782		    String		Text
+0x601048		Gloable Variable a      Data
+0x60104c          	Static Variable e       Data
+0x601064                Static Variable	c	Data
+0x10b5010		    Variable P          Heap
+0x7ffdfca03314 		    Variable d		Stack
+0x7ffdfca03334		    Variable b		Stack
+0x7ffdfca03338		    Pointer  p		Stack
+0x7ffdfca03340		    Pointer  str 	Stack

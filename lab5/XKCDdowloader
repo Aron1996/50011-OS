@@ -1,0 +1,35 @@
+#!/bin/bash
+if [ $# -eq 0 ] ; then
+   echo "Usage: $0 start_range end_range"
+   exit 1
+fi
+if [ $1 -gt $2 ] ; then
+    echo "start_range cannot be after end_range"
+    exit 1
+fi
+a=$(($2 - $1+1))
+echo $a
+if [ $a -gt 20 ] ; then
+    echo "start_range cannot be after end_range"
+    exit 1
+fi
+mkdir -p image
+cd image
+url="https://www.xkcd.com/"
+for (( i=$1 ; i<=$2; i++ )); 
+do
+    echo $i
+    temp="$url$i/"
+    wget $temp
+done
+file=index.html*
+for i in $file ; do
+    #url="https://imgs.xkcd.com/comics/"
+    name=$(grep "<img src=.*title" $i | cut -d" " -f2-2 | cut -c6- | rev | cut -c 2- | rev)
+    url2=$(printf "https:%s" "$name")
+    rm $i
+    wget $url2
+done
+cd ..
+tar -cvf xkcd_comics.tar image
+rm -r image

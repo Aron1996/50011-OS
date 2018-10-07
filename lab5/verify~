@@ -1,0 +1,59 @@
+#!/bin/bash
+if test ! -r $1; then
+    echo "Error: noread is not readable!"
+    exit 1
+fi
+if [ $# -eq 0 ] ; then
+    echo "Usage: verify <filename>"
+    exit 1
+fi
+readarray result < $1
+REGEX="^[[:upper:]]{1}[[:lower:]]+, [[:upper:]]{1}[[:lower:]]+$"
+REGEX2="^[[:upper:]]{1}[[:lower:]]+, [[:upper:]]{1}[[:lower:]]+ [[:upper:]]{1}.$"
+REGEX3="^[0-9]+(\ [A-Z0-9][A-Za-z0-9.]*)+$"
+
+for i in "${!result[@]}"; do
+    name="$(cut -d";" -f1-1 <<<"${result[$i]}")"
+    address="$(cut -d";" -f2-2 <<<"${result[$i]}")"
+    left=0
+    right=0
+    if [[ $name =~ $REGEX ]] || [[ $name =~ $REGEX2 ]] ; then
+	left=1
+    fi
+    if  [[ $address =~ $REGEX3 ]] ; then
+	right=1
+    fi
+    if [[ left -eq 1 ]] && [[ right -eq 1 ]] ; then
+	let j=$i+1
+	echo "Line $j is valid"
+    fi
+    if [[ left -eq 0 ]] && [[ right -eq 0 ]]; then
+	let j=$i+1
+	echo "Line $j has an invalid name and address!"
+    fi
+    if [[ left -eq 0 ]] && [[ right -eq 1 ]]; then
+	let j=$i+1
+	echo "Line $j has an invalid name!"
+    fi
+    if [[ left -eq 1 ]] && [[ right -eq 0 ]]; then
+	let j=$i+1
+	echo "Line $j has an invalid address!"
+    fi
+
+done
+str="27 Hilltop Dr. Apt. 7"
+REGEX3="^[0-9]+(\ [A-Z0-9][A-Za-z0-9.]*)+$"
+#REGEX4="^[A-Z0-9][a-z0-9].*[A-Z0-9][a-z0-9].*[A-Z0-9][a-z0-9]"
+if [[ $str =~ $REGEX3 ]] ; then
+    echo "valid"
+else
+    echo "invalid"
+fi
+
+#if [[ $str =~ $REGEX3 ]] && [[ ${str: -1} =~ [A-Za-z0-9.] ]]; then
+#    echo "valid"
+#else
+#    echo "invalid"
+#fi
+
+

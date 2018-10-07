@@ -1,0 +1,40 @@
+#!/bin/bash
+if [ $# -eq 1 ] ; then
+    echo "Usage: finduser"
+    exit 1
+fi
+echo "Welcome to User Finder!"
+read -p "Please enter part or all of a username to search for: " name
+ypcat passwd | egrep "$name" > outfile
+fullname=$(head -1 outfile | cut -d':' -f5-5| cut -d',' -f1-1)
+username=$(head -1 outfile | cut -d':' -f1-1)
+home=$(head -1 outfile | cut -d':' -f6-6 )
+shell=$(head -1 outfile | cut -d':' -f7-7)
+count=$(wc -l outfile | cut -f1 -d ' ')
+if ypcat passwd | cut -d':' -f1-1 | grep -q "$name"; then
+    if [ $count -gt 1 ] ; then
+	echo "I found $count matches!"
+	echo "You might want to be more specific."
+	echo "The first of these matches is:"
+	echo "Username: $username"
+	echo "Name: $fullname"
+	echo "Home Directory: $home"
+	echo "Shell: $shell"
+	echo "Search complete on $(date)"
+	rm -f outfile
+	exit 1
+    else
+	echo "Match found!"
+	echo "Username: $username"
+	echo "Name: $fullname"
+	echo "Home Directory: $home"
+	echo "Shell: $shell"
+	echo "Search complete on $(date)"
+	rm -f outfile
+	exit 1
+    fi
+else
+    echo "Sorry, I could not find that username."
+fi
+
+
